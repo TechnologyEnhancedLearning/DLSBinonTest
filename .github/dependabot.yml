@@ -9,4 +9,11 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-     open-pull-requests-limit: 20
+      open-pull-requests-limit: 20
+
+ # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      open-pull-requests-limit: 20
