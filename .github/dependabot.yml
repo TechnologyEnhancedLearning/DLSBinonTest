@@ -13,7 +13,7 @@ updates:
   
   # Configuration for npm
   - package-ecosystem: "npm" 
-    directory: "/" # Location of package manifests
+    directory: "/DigitalLearningSolutions.Web/" # Location of package manifests
     schedule:
       interval: "daily"
     open-pull-requests-limit: 50
