@@ -11,16 +11,14 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 50
     ignore:
-      # Ignore updates to packages that start with 'aws'
-      # Wildcards match zero or more arbitrary characters
+      # Ignore updates to packages that start with 'Wildcards'
       - dependency-name: "Microsoft.FeatureManagement.AspNetCore*"
-      # Ignore some updates to the 'express' package
+      # Ignore some updates to the package
       - dependency-name: "Microsoft.VisualStudio.Web.CodeGeneration.Design"
-        # Ignore only new versions for 4.x and 5.x
         versions: ["7.x"]
       # For all packages, ignore all patch updates
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+      #- dependency-name: "*"
+      #  update-types: ["version-update:semver-patch"]
   
   # Configuration for npm
   - package-ecosystem: "npm" 
