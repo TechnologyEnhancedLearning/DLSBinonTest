@@ -8,7 +8,7 @@ namespace DigitalLearningSolutions.Web.Helpers
 {
     public static class CookieBannerHelper
     {
-        //public static readonly int CookieExpiryDays = 365;
+        //public static readonly int CookieExpiryDays = 365 ;
         //public static readonly string CookieName = "Dls-cookie-consent";
 
         public static void SetDLSBannerCookie(
