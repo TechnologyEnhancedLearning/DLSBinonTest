@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 50
-    update:
+    allow:
       - dependency-name: "Selenium.WebDriver.ChromeDriver"
         versions: ["113.0.5672.2400⁠"]
       - dependency-name: "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
