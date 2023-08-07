@@ -13,6 +13,8 @@ updates:
     update:
       - dependency-name: "Selenium.WebDriver.ChromeDriver"
         versions: ["113.0.5672.2400⁠"]
+      - dependency-name: "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+        versions: ["6.0.18⁠"]
     ignore:
       # Ignore updates to packages that start with 'Wildcards'
       - dependency-name: "Microsoft.FeatureManagement.AspNetCore*"
