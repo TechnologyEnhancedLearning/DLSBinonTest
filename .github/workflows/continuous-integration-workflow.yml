@@ -12,12 +12,14 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Clear NuGet Cache
-        run:  nuget locals all -clear
-
       - name: Add TechnologyEnhancedLearning as nuget package source
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        run: dotnet nuget add source https://pkgs.dev.azure.com/e-LfH/_packaging/LearningHubFeed/nuget/v3/index.json --name TechnologyEnhancedLearning --username 'kevin.whittaker' --password ${{ secrets.AZURE_DEVOPS_PAT  }} --store-password-in-clear-text
+        
+      - name: Add TechnologyEnhancedLearning as nuget package source Dependabot  
+        if: ${{ github.actor == 'dependabot[bot]' }}
         run: dotnet nuget add source https://pkgs.dev.azure.com/e-LfH/_packaging/LearningHubFeed/nuget/v3/index.json --name TechnologyEnhancedLearning --username 'kevin.whittaker' --password ${{ secrets.BinonDependabotPAT }} --store-password-in-clear-text
-
+      
       - name: Dotnet build
         run: dotnet build DigitalLearningSolutions.sln
 
