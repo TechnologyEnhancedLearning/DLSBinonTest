@@ -13,7 +13,7 @@ updates:
     target-branch: "ci_nuget_upgrade_master"
     ignore:
       # Ignore updates to packages that start with 'Wildcards'
-      - dependency-name: "Microsoft.FeatureManagement.AspNetCore*"
+      #- dependency-name: "Microsoft.FeatureManagement.AspNetCore*"
       # Ignore some updates to the package
       - dependency-name: "Microsoft.VisualStudio.Web.CodeGeneration.Design"
         versions: ["7.*"]
