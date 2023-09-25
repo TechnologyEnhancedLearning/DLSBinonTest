@@ -38,7 +38,7 @@
     "@babel/core": "^7.22.10",
     "@babel/preset-env": "^7.22.14",
     "@babel/preset-typescript": "^7.22.5",
-    "@types/dompurify": "^3.0.2",
+    "@types/dompurify": "^3.0.3",
     "@types/jest": "^27.5.2",
     "@types/js-cookie": "^3.0.3",
     "@types/js-search": "^1.4.0",
