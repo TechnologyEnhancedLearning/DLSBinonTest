@@ -44,4 +44,5 @@ updates:
       - "dependencies"
     open-pull-requests-limit: 5
     ignore:
-      update-types: ["version-update:semver-major"]
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
