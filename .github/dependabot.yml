@@ -36,10 +36,12 @@ updates:
     schedule:
       interval: "daily"
     # Increase the version requirements for Composer only when required
-    versioning-strategy: increase
+    # versioning-strategy: increase-if-necessary
     target-branch: "ci_npm_upgrade_master"
     # Labels on pull requests for version updates only
     labels:
       - "npm update dependabot"
       - "dependencies"
     open-pull-requests-limit: 5
+    ignore:
+      update-types: ["version-update:semver-major"]
