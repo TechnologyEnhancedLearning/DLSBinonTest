@@ -42,7 +42,7 @@ updates:
     labels:
       - "npm update dependabot"
       - "dependencies"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 6
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
