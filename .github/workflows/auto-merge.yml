@@ -9,7 +9,6 @@ on:
       - closed
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]' # Ensure this condition is valid and properly placed
     runs-on: ubuntu-latest
 
     steps:
