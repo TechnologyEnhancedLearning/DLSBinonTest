@@ -13,10 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print PR Information
-        run: echo "Actor: B"
-
-      - name: Check PR Title for Minor or Patch
+     - name: Check PR Title for Minor or Patch
         id: check_update_type
         run: |
           if [[ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]]; then
