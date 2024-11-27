@@ -18,7 +18,7 @@ jobs:
         id: check_update_type
         run: |
           echo "PR title: ${{ github.event.pull_request.title }}"
-          if ([ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]); then
+          if [[ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]]; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
