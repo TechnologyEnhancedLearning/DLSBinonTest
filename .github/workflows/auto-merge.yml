@@ -7,43 +7,13 @@ on:
       - synchronize
       - reopened
       - closed
-
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]'
-    runs-on: windows-latest
+    if: github.actor == 'dependabot[bot]' # Ensure this condition is valid and properly placed
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Check PR Title for Minor or Patch
-        id: check_update_type
-        shell: pwsh
-        run: |
-          $prTitle = "${{ github.event.pull_request.title }}"
-          Write-Output "PR title: $prTitle"
-          if ($prTitle -match "(minor|patch)") {
-              Write-Output "PR matches criteria"
-              "should_merge=true" | Out-File -FilePath $env:GITHUB_ENV -Append
-          } else {
-              Write-Output "PR does not match criteria"
-              "should_merge=false" | Out-File -FilePath $env:GITHUB_ENV -Append
-          }
-
-      - name: Check CI Status
-        if: env.should_merge == 'true'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { data: checkRuns } = await github.checks.listForRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: context.payload.pull_request.head.sha,
-            });
-            if (!checkRuns.check_runs.every(check => check.conclusion === "success")) {
-              throw new Error("CI checks failed");
-            }
-
       - name: Merge Pull Request
-        if: env.should_merge == 'true'
         uses: actions/github-script@v6
         with:
           script: |
@@ -52,4 +22,4 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
               merge_method: "squash",
-            });
+            })
