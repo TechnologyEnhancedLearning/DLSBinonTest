@@ -3,10 +3,10 @@ name: Auto Merge Dependabot PRs
 on:
   pull_request:
     types:
-      - closed
+      - opened
       - synchronize
       - reopened
-      - opened
+      - closed
 
 jobs:
   auto-merge:
@@ -16,12 +16,17 @@ jobs:
     steps:
       - name: Check PR Title for Minor or Patch
         id: check_update_type
+        shell: pwsh
         run: |
-          echo "PR title: ${{ github.event.pull_request.title }}"
-          if (( "${{ github.event.pull_request.title }}" =~ (minor|patch) )); then
-            echo "should_merge=true" >> $GITHUB_ENV
-          else
-            echo "should_merge=false" >> $GITHUB_ENV
+          $prTitle = "${{ github.event.pull_request.title }}"
+          Write-Output "PR title: $prTitle"
+          if ($prTitle -match "(minor|patch)") {
+              Write-Output "PR matches criteria"
+              "should_merge=true" | Out-File -FilePath $env:GITHUB_ENV -Append
+          } else {
+              Write-Output "PR does not match criteria"
+              "should_merge=false" | Out-File -FilePath $env:GITHUB_ENV -Append
+          }
 
       - name: Check CI Status
         if: env.should_merge == 'true'
@@ -35,7 +40,7 @@ jobs:
             });
             if (!checkRuns.check_runs.every(check => check.conclusion === "success")) {
               throw new Error("CI checks failed");
-            }         
+            }
 
       - name: Merge Pull Request
         if: env.should_merge == 'true'
