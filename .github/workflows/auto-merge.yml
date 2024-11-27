@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Print PR Information
-        run: echo "Actor:B"
+        run: echo "Actor: ${{ github.actor }}, Title: ${{ github.event.pull_request.title }}"
 
       - name: Check PR Title for Minor or Patch
         id: check_update_type
