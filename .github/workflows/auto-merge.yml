@@ -2,6 +2,10 @@ name: Auto Merge Dependabot PRs to Develop
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   pull-requests: write
@@ -10,7 +14,7 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.actor == 'binon'
 
     steps:
       - name: Checkout the repository
@@ -121,7 +125,7 @@ jobs:
       - name: Check if Should Merge
         run: |
           echo "DEBUG: should_merge=${{ env.should_merge }}"
-          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "ci_nuget_upgrade_master" ]]; then
+          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "master" ]]; then
             echo "DEBUG: should merge PR"
             echo "should_merge=true" >> $GITHUB_ENV
           else
