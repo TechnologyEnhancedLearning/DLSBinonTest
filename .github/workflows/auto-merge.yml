@@ -18,9 +18,13 @@ jobs:
 
     steps:
       - name: Set up GitHub CLI
-        uses: cli/cli-action@v2
-        with:
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Install GitHub CLI (gh)
+          sudo apt-get update
+          sudo apt-get install gh
+
+          # Authenticate GitHub CLI using the provided token
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           
       - name: Wait for CI workflow to pass (Ensure CI workflow succeeded)
         id: wait_for_ci
