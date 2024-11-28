@@ -23,7 +23,8 @@ jobs:
           PR_TITLE='${{ github.event.pull_request.title }}'
           # Escape problematic quotes
           ESCAPED_TITLE=$(echo "$PR_TITLE" | sed 's/"/\\"/g')
-          console.log("ESCAPED TITLE:", ESCAPED_TITLE);
+          echo "ESCAPED TITLE: $ESCAPED_TITLE"
+          console.log("ESCAPED TITLE:", process.env.ESCAPED_TITLE)
           
           if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && [[ "$ESCAPED_TITLE" =~ (minor|patch) ]]; then
           else
