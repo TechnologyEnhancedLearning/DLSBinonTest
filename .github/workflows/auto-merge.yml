@@ -17,6 +17,9 @@ jobs:
     if: github.actor == 'binon'
 
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        
       - name: Set up GitHub CLI
         run: |
           # Install GitHub CLI (gh)
