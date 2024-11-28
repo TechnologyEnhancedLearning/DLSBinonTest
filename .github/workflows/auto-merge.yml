@@ -35,8 +35,8 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           echo "Checking CI status for PR #$PR_NUMBER"
           
-          # Fetch the latest commit status to ensure CI passed before proceeding with merge
-          CI_STATUS=$(gh pr view $PR_NUMBER --json checkRunRollup --jq '.checkRunRollup.checkRuns[0].status')
+           # Fetch the latest commit status to ensure CI passed before proceeding with merge
+          CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup --jq '.statusCheckRollup.state')
           
           # Ensure GitHub CLI is authenticated with the GitHub token
           echo "CI Status: $CI_STATUS"
