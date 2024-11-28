@@ -20,7 +20,11 @@ jobs:
       - name: Check Target Branch
         id: check_branch
         run: |
-          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && [[ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]]; then
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          # Escape problematic quotes
+          ESCAPED_TITLE=$(echo "$PR_TITLE" | sed 's/"/\\"/g')
+
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && [[ "$ESCAPED_TITLE" =~ (minor|patch) ]]; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
