@@ -1,6 +1,8 @@
 name: Auto Merge Dependabot PRs to Develop
 
-on: [pull_request]
+on:
+  workflow_dispatch:
+  pull_request:
 
 permissions:
   pull-requests: write
