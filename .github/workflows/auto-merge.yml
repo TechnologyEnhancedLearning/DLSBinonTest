@@ -17,7 +17,7 @@ jobs:
     if: github.actor == 'binon'
 
     steps:
-      - name: Wait for CI to pass (Ensure CI workflow succeeded)
+      - name: Wait for CI workflow to pass (Ensure CI workflow succeeded)
         id: wait_for_ci
         run: |
           # Triggered after CI workflow completes, check if it's successful
