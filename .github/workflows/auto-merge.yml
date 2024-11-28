@@ -19,7 +19,7 @@ jobs:
       - name: Check Target Branch
         id: check_branch
         run: |
-          if [[ "${{ github.event.pull_request.base.ref }}" == "ci_nuget_upgrade_master" ]]; then
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]]; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
