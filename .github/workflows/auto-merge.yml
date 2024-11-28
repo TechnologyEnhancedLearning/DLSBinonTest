@@ -20,7 +20,7 @@ jobs:
       - name: Check Target Branch
         id: check_branch
         run: |
-          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]]  && [[ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]]; then
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && [[ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]]; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
