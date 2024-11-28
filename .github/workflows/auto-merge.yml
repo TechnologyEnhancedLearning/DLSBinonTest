@@ -153,7 +153,7 @@ jobs:
       - name: Check if Should Merge
         run: |
           echo "DEBUG: should_merge=${{ env.should_merge }}"
-          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "master" ]]; then
+          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "ci_nuget_upgrade_master" ]]; then
             echo "DEBUG: should merge PR"
             echo "should_merge=true" >> $GITHUB_ENV
           else
