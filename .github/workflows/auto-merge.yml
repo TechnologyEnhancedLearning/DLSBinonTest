@@ -52,6 +52,7 @@ jobs:
 
             status=$(_jq '.conclusion')
 
+            # If any check fails, set ALL_CHECKS_PASSED to false and break the loop
             if [[ "$status" != "success" ]]; then
               ALL_CHECKS_PASSED=false
               break
@@ -62,7 +63,7 @@ jobs:
             echo "CI failed, aborting merge."
             exit 1
           fi
-
+          
       - name: Check Target Branch and PR Title
         id: check_branch
         run: |
