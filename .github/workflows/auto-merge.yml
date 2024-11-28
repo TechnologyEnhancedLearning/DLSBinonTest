@@ -58,7 +58,7 @@ jobs:
             echo "should_merge=false" >> $GITHUB_ENV
           fi
         
-          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && env.should_merge == 'true'; then
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] &&  ${{ env.should_merge == 'true' }} ; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
