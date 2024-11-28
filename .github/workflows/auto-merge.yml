@@ -21,8 +21,11 @@ jobs:
         id: check_branch
         run: |
           PR_TITLE='${{ github.event.pull_request.title }}'
+          echo "Original PR Title: $PR_TITLE"
+          
           # Escape problematic quotes
           ESCAPED_TITLE=$(echo "$PR_TITLE" | sed 's/"/\\"/g')
+          echo "Escaped PR Title: $ESCAPED_TITLE"
         
           if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && [[ "$ESCAPED_TITLE" =~ (minor|patch) ]]; then
             echo "should_merge=true" >> $GITHUB_ENV
