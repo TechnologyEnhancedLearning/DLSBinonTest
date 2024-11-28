@@ -50,18 +50,25 @@ jobs:
                 echo ${check} | base64 --decode | jq -r ${1}
               }
   
-              status=$(_jq '.conclusion')
-              check_name=$(_jq '.name')
-  
-              # Log check details
-              echo "Check: $check_name, Status: $status"
-  
-              # If any check fails, set ALL_CHECKS_PASSED to false and break the loop
-              if [[ "$status" != "success" ]]; then
-                ALL_CHECKS_PASSED=false
-                break
-              fi
-            done
+                status=$(_jq '.status')
+                conclusion=$(_jq '.conclusion')
+                check_name=$(_jq '.name')
+              
+                # Log check details
+                echo "Check: $check_name, Status: $status, Conclusion: $conclusion"
+              
+                # If the check is still in progress, skip it
+                if [[ "$status" == "IN_PROGRESS" ]]; then
+                  echo "Check '$check_name' is still in progress, skipping."
+                  continue
+                fi
+              
+                # If any check fails, set ALL_CHECKS_PASSED to false and break the loop
+                if [[ "$conclusion" != "SUCCESS" ]]; then
+                  ALL_CHECKS_PASSED=false
+                  break
+                fi
+              done
   
             if [[ "$ALL_CHECKS_PASSED" == "false" ]]; then
               echo "CI failed, aborting merge."
