@@ -36,21 +36,29 @@ jobs:
           echo "Checking CI status for PR #$PR_NUMBER"
           
           # Fetch the check runs associated with the PR to ensure CI passed before proceeding with merge
-          CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup --jq '.statusCheckRollup.checks')
+          CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup)
+          
+          # Log the CI_STATUS for debugging purposes
+          echo "CI Status Response: $CI_STATUS"
 
-          # Ensure GitHub CLI is authenticated with the GitHub token
-          echo "CI Status: $CI_STATUS"
+          # Extract the checks from the response
+          CHECKS=$(echo "$CI_STATUS" | jq -r '.statusCheckRollup.checks')
+          echo "Check Runs: $CHECKS"
 
           # Flag to track if all checks passed
           ALL_CHECKS_PASSED=true
 
           # Iterate over the check runs and check if all are successful
-          for check in $(echo "$CI_STATUS" | jq -r '.[] | @base64'); do
+          for check in $(echo "$CHECKS" | jq -r '.[] | @base64'); do
             _jq() {
               echo ${check} | base64 --decode | jq -r ${1}
             }
 
             status=$(_jq '.conclusion')
+            check_name=$(_jq '.name')
+
+            # Log check details
+            echo "Check: $check_name, Status: $status"
 
             # If any check fails, set ALL_CHECKS_PASSED to false and break the loop
             if [[ "$status" != "success" ]]; then
