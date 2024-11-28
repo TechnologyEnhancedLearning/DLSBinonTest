@@ -66,7 +66,7 @@ jobs:
             
                 # Log check details
                 echo "Check: $check_name, Status: $status, Conclusion: $conclusion"
-                 if [[ "$check_name" == "Auto Merge Dependabot PRs" ]]; then
+                 if [[ "$check_name" == "auto-merge" ]]; then
                     echo "Skipping 'auto-merge' workflow check to prevent self-referencing."
                     continue
                   fi
