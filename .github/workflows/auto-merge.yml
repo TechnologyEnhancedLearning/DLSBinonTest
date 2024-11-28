@@ -57,8 +57,8 @@ jobs:
             echo "No version change detected"
             echo "should_merge=false" >> $GITHUB_ENV
           fi
-
-          echo ${{ env.should_merge}}
+          
+          console.log("can I merge?:", ${{ env.should_merge}});
           
           if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] &&  ${{ env.should_merge == 'true' }} ; then
             echo "should_merge=true" >> $GITHUB_ENV
