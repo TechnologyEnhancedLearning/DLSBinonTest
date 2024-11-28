@@ -1,4 +1,4 @@
-name: Auto Merge Dependabot PRs to Develop
+name: Auto Merge Dependabot PRs
 
 on:
   pull_request:
@@ -66,7 +66,11 @@ jobs:
             
                 # Log check details
                 echo "Check: $check_name, Status: $status, Conclusion: $conclusion"
-            
+                 if [[ "$check_name" == "Auto Merge Dependabot PRs" ]]; then
+                    echo "Skipping 'auto-merge' workflow check to prevent self-referencing."
+                    continue
+                  fi
+                  
                 # If any check is still in progress, set ALL_COMPLETED to false
                 if [[ "$status" == "IN_PROGRESS" ]]; then
                   ALL_COMPLETED=false
