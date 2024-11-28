@@ -17,10 +17,10 @@ jobs:
     if: github.actor == 'binon'
 
     steps:
-      - name: Check Target Branch
+      - name: Check Target Branch and PR Title
         id: check_branch
         run: |
-          PR_TITLE='${{ github.event.pull_request.title }}'
+          PR_TITLE="${{ github.event.pull_request.title }}"
           echo "Original PR Title: $PR_TITLE"
           
           # Escape problematic quotes
@@ -28,13 +28,12 @@ jobs:
           echo "Escaped PR Title: $ESCAPED_TITLE"
 
           if [[ "$ESCAPED_TITLE" =~ ([0-9]+\.[0-9]+\.[0-9]+).*to.*([0-9]+\.[0-9]+\.[0-9]+) ]]; then
-            # Check if it's a minor or patch update
-            # Get the version numbers from the title
+            # Extract version numbers
             OLD_VERSION="${BASH_REMATCH[1]}"
             NEW_VERSION="${BASH_REMATCH[2]}"
             echo "Version change detected: $OLD_VERSION to $NEW_VERSION"
             
-            # Compare versions (for patch or minor update)
+            # Split version into major, minor, patch components
             OLD_MAJOR=$(echo "$OLD_VERSION" | cut -d '.' -f1)
             OLD_MINOR=$(echo "$OLD_VERSION" | cut -d '.' -f2)
             OLD_PATCH=$(echo "$OLD_VERSION" | cut -d '.' -f3)
@@ -43,10 +42,10 @@ jobs:
             NEW_MINOR=$(echo "$NEW_VERSION" | cut -d '.' -f2)
             NEW_PATCH=$(echo "$NEW_VERSION" | cut -d '.' -f3)
             
+            # Check if it's a minor or patch update
             if [[ "$OLD_MAJOR" == "$NEW_MAJOR" ]] && [[ "$OLD_MINOR" == "$NEW_MINOR" ]] && [[ "$NEW_PATCH" -gt "$OLD_PATCH" ]]; then
               echo "Patch update detected"
               echo "should_merge=true" >> $GITHUB_ENV
-              echo "can I merge?: ${{ env.should_merge }}"
             elif [[ "$OLD_MAJOR" == "$NEW_MAJOR" ]] && [[ "$NEW_MINOR" -gt "$OLD_MINOR" ]]; then
               echo "Minor update detected"
               echo "should_merge=true" >> $GITHUB_ENV
@@ -58,23 +57,26 @@ jobs:
             echo "No version change detected"
             echo "should_merge=false" >> $GITHUB_ENV
           fi
-          
-          echo "can I merge?: ${{ env.should_merge }}"
-          
-          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] &&  ${{ env.should_merge == 'true' }} ; then
-            echo "should_merge=true" >> $GITHUB_ENV
-          else
-            echo "should_merge=false" >> $GITHUB_ENV
-          fi
-          
+
       - name: Debug Context
         uses: actions/github-script@v6
         with:
           script: |
             console.log("Target branch:", context.payload.pull_request.base.ref);
 
+      - name: Check if Should Merge
+        run: |
+          echo "DEBUG: should_merge=${{ env.should_merge }}"
+          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "develop" ]]; then
+            echo "DEBUG: should merge PR"
+            echo "should_merge=true" >> $GITHUB_ENV
+          else
+            echo "DEBUG: skip merge"
+            echo "should_merge=false" >> $GITHUB_ENV
+          fi
+
       - name: Merge Pull Request
-        if: env.should_merge == 'true'
+        if: ${{ env.should_merge == 'true' }}
         uses: actions/github-script@v6
         with:
           script: |
@@ -83,4 +85,4 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
               merge_method: "squash"
-            });            
+            });
