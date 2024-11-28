@@ -33,7 +33,7 @@ jobs:
           echo "Checking CI status for PR #$PR_NUMBER"
           
           # Fetch the latest commit status to ensure CI passed before proceeding with merge
-          CI_STATUS=$(gh pr view $PR_NUMBER --json status --jq '.status')
+          CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup --jq '.statusCheckRollup.state')
           
           # Ensure GitHub CLI is authenticated with the GitHub token
           echo "CI Status: $CI_STATUS"
