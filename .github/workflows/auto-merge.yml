@@ -17,6 +17,11 @@ jobs:
     if: github.actor == 'binon'
 
     steps:
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v2
+        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Wait for CI workflow to pass (Ensure CI workflow succeeded)
         id: wait_for_ci
         run: |
