@@ -17,19 +17,57 @@ jobs:
     if: github.actor == 'binon'
 
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        
+      - name: Set up GitHub CLI
+        run: |
+          # Install GitHub CLI (gh)
+          sudo apt-get update
+          sudo apt-get install gh
+
+          # Authenticate GitHub CLI using the provided token
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          
       - name: Wait for CI workflow to pass (Ensure CI workflow succeeded)
         id: wait_for_ci
         run: |
-          # Triggered after CI workflow completes, check if it's successful
-          PR_NUMBER=${{ github.event.pull_request.number }}
+           PR_NUMBER=${{ github.event.pull_request.number }}
+            echo "Checking CI status for PR #$PR_NUMBER"
+            
+            # Fetch the check runs associated with the PR to ensure CI passed before proceeding with merge
+            CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup)
+            
+            # Log the CI_STATUS for debugging purposes
+            echo "CI Status Response: $CI_STATUS"
+            
+            # Flag to track if all checks passed
+            ALL_CHECKS_PASSED=true
+  
+            # Iterate over the check runs and check if all are successful
+            for check in $(echo "$CI_STATUS" | jq -r '.statusCheckRollup[] | @base64'); do
+              _jq() {
+                echo ${check} | base64 --decode | jq -r ${1}
+              }
+  
+              status=$(_jq '.conclusion')
+              check_name=$(_jq '.name')
+  
+              # Log check details
+              echo "Check: $check_name, Status: $status"
+  
+              # If any check fails, set ALL_CHECKS_PASSED to false and break the loop
+              if [[ "$status" != "success" ]]; then
+                ALL_CHECKS_PASSED=false
+                break
+              fi
+            done
+  
+            if [[ "$ALL_CHECKS_PASSED" == "false" ]]; then
+              echo "CI failed, aborting merge."
+              exit 1
+            fi
           
-          # Fetch the latest commit status to ensure CI passed before proceeding with merge
-          CI_STATUS=$(gh pr view $PR_NUMBER --json status --jq '.status')
-
-          if [[ "$CI_STATUS" != "SUCCESS" ]]; then
-            echo "CI failed, aborting merge."
-            exit 1
-          fi
       - name: Check Target Branch and PR Title
         id: check_branch
         run: |
