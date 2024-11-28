@@ -26,8 +26,39 @@ jobs:
           # Escape problematic quotes
           ESCAPED_TITLE=$(echo "$PR_TITLE" | sed 's/"/\\"/g')
           echo "Escaped PR Title: $ESCAPED_TITLE"
+
+          if [[ "$ESCAPED_TITLE" =~ ([0-9]+\.[0-9]+\.[0-9]+).*to.*([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            # Check if it's a minor or patch update
+            # Get the version numbers from the title
+            OLD_VERSION="${BASH_REMATCH[1]}"
+            NEW_VERSION="${BASH_REMATCH[2]}"
+            echo "Version change detected: $OLD_VERSION to $NEW_VERSION"
+            
+            # Compare versions (for patch or minor update)
+            OLD_MAJOR=$(echo "$OLD_VERSION" | cut -d '.' -f1)
+            OLD_MINOR=$(echo "$OLD_VERSION" | cut -d '.' -f2)
+            OLD_PATCH=$(echo "$OLD_VERSION" | cut -d '.' -f3)
+            
+            NEW_MAJOR=$(echo "$NEW_VERSION" | cut -d '.' -f1)
+            NEW_MINOR=$(echo "$NEW_VERSION" | cut -d '.' -f2)
+            NEW_PATCH=$(echo "$NEW_VERSION" | cut -d '.' -f3)
+            
+            if [[ "$OLD_MAJOR" == "$NEW_MAJOR" ]] && [[ "$OLD_MINOR" == "$NEW_MINOR" ]] && [[ "$NEW_PATCH" -gt "$OLD_PATCH" ]]; then
+              echo "Patch update detected"
+              echo "should_merge=true" >> $GITHUB_ENV
+            elif [[ "$OLD_MAJOR" == "$NEW_MAJOR" ]] && [[ "$NEW_MINOR" -gt "$OLD_MINOR" ]]; then
+              echo "Minor update detected"
+              echo "should_merge=true" >> $GITHUB_ENV
+            else
+              echo "No minor/patch update detected"
+              echo "should_merge=false" >> $GITHUB_ENV
+            fi
+          else
+            echo "No version change detected"
+            echo "should_merge=false" >> $GITHUB_ENV
+          fi
         
-          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && [[ "$ESCAPED_TITLE" =~ (minor|patch) ]]; then
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]] && env.should_merge == 'true'; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
