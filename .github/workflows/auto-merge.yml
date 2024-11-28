@@ -32,48 +32,76 @@ jobs:
       - name: Wait for CI workflow to pass (Ensure CI workflow succeeded)
         id: wait_for_ci
         run: |
-           PR_NUMBER=${{ github.event.pull_request.number }}
+           # Get the PR number from the GitHub event
+            PR_NUMBER=${{ github.event.pull_request.number }}
             echo "Checking CI status for PR #$PR_NUMBER"
             
-            # Fetch the check runs associated with the PR to ensure CI passed before proceeding with merge
-            CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup)
+            # Define the maximum wait time (in seconds) and the polling interval (in seconds)
+            MAX_WAIT_TIME=600  # 10 minutes
+            POLL_INTERVAL=10   # Check every 10 seconds
             
-            # Log the CI_STATUS for debugging purposes
-            echo "CI Status Response: $CI_STATUS"
+            # Initialize a timer
+            elapsed_time=0
             
-            # Flag to track if all checks passed
-            ALL_CHECKS_PASSED=true
-  
-            # Iterate over the check runs and check if all are successful
-            for check in $(echo "$CI_STATUS" | jq -r '.statusCheckRollup[] | @base64'); do
-              _jq() {
-                echo ${check} | base64 --decode | jq -r ${1}
-              }
-  
+            # Poll CI status until all checks are completed
+            while true; do
+              # Fetch the status check rollup for the PR
+              CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup)
+              
+              # Log the fetched response
+              echo "CI Status Response: $CI_STATUS"
+              
+              # Parse the checks and check their status
+              ALL_COMPLETED=true
+              ALL_CHECKS_PASSED=true
+              
+              for check in $(echo "$CI_STATUS" | jq -r '.statusCheckRollup[] | @base64'); do
+                _jq() {
+                  echo "${check}" | base64 --decode | jq -r "${1}"
+                }
+                
                 status=$(_jq '.status')
                 conclusion=$(_jq '.conclusion')
                 check_name=$(_jq '.name')
-              
+            
                 # Log check details
                 echo "Check: $check_name, Status: $status, Conclusion: $conclusion"
-              
-                # If the check is still in progress, skip it
+            
+                # If any check is still in progress, set ALL_COMPLETED to false
                 if [[ "$status" == "IN_PROGRESS" ]]; then
-                  echo "Check '$check_name' is still in progress, skipping."
-                  continue
+                  ALL_COMPLETED=false
                 fi
-              
-                # If any check fails, set ALL_CHECKS_PASSED to false and break the loop
-                if [[ "$conclusion" != "SUCCESS" ]]; then
+            
+                # If any completed check has failed, set ALL_CHECKS_PASSED to false
+                if [[ "$status" == "COMPLETED" && "$conclusion" != "SUCCESS" ]]; then
                   ALL_CHECKS_PASSED=false
-                  break
                 fi
               done
-  
-            if [[ "$ALL_CHECKS_PASSED" == "false" ]]; then
-              echo "CI failed, aborting merge."
+            
+              # Break the loop if all checks are completed
+              if [[ "$ALL_COMPLETED" == true ]]; then
+                break
+              fi
+            
+              # Wait for the next polling interval
+              echo "Waiting for checks to complete... ($elapsed_time/$MAX_WAIT_TIME seconds elapsed)"
+              sleep $POLL_INTERVAL
+              elapsed_time=$((elapsed_time + POLL_INTERVAL))
+            
+              # Exit if the maximum wait time is exceeded
+              if [[ "$elapsed_time" -ge "$MAX_WAIT_TIME" ]]; then
+                echo "Timed out waiting for CI checks to complete."
+                exit 1
+              fi
+            done
+            
+            # Final check: Ensure all CI checks passed
+            if [[ "$ALL_CHECKS_PASSED" == false ]]; then
+              echo "One or more CI checks failed. Aborting merge."
               exit 1
             fi
+            
+            echo "All CI checks passed successfully."            
           
       - name: Check Target Branch and PR Title
         id: check_branch
