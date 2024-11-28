@@ -17,6 +17,19 @@ jobs:
     if: github.actor == 'binon'
 
     steps:
+      - name: Wait for CI workflow to pass (Ensure CI workflow succeeded)
+        id: wait_for_ci
+        run: |
+          # Triggered after CI workflow completes, check if it's successful
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          
+          # Fetch the latest commit status to ensure CI passed before proceeding with merge
+          CI_STATUS=$(gh pr view $PR_NUMBER --json status --jq '.status')
+
+          if [[ "$CI_STATUS" != "SUCCESS" ]]; then
+            echo "CI failed, aborting merge."
+            exit 1
+          fi
       - name: Check Target Branch and PR Title
         id: check_branch
         run: |
