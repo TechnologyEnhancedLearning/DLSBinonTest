@@ -46,6 +46,7 @@ jobs:
             if [[ "$OLD_MAJOR" == "$NEW_MAJOR" ]] && [[ "$OLD_MINOR" == "$NEW_MINOR" ]] && [[ "$NEW_PATCH" -gt "$OLD_PATCH" ]]; then
               echo "Patch update detected"
               echo "should_merge=true" >> $GITHUB_ENV
+              echo "can I merge?: ${{ env.should_merge }}"
             elif [[ "$OLD_MAJOR" == "$NEW_MAJOR" ]] && [[ "$NEW_MINOR" -gt "$OLD_MINOR" ]]; then
               echo "Minor update detected"
               echo "should_merge=true" >> $GITHUB_ENV
