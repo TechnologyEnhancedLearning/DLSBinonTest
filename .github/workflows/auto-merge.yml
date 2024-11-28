@@ -1,4 +1,4 @@
-name: Auto Merge Dependabot PRs
+name: Auto Merge Dependabot PRs to Develop
 
 on:
   pull_request:
@@ -7,31 +7,38 @@ on:
       - synchronize
       - reopened
 
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]' # Ensure this condition is valid and properly placed
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print PR Information
-        run: echo "Actor:B"
-
-      - name: Check PR Title for Minor or Patch
-        id: check_update_type
+      - name: Check Target Branch
+        id: check_branch
         run: |
-          if [[ "${{ github.event.pull_request.title }}" =~ (minor|patch) ]]; then
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" ]]; then
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
-
-      - name: Merge Pull Request
-        if: env.should_merge == 'true' # Ensure this is properly indented and aligned
+          fi
+          
+      - name: Debug Context
         uses: actions/github-script@v6
         with:
           script: |
-            github.pulls.merge({
+            console.log("Target branch:", context.payload.pull_request.base.ref);
+
+      - name: Merge Pull Request
+        if: env.should_merge == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
-              merge_method: "squash",
-            })
+              merge_method: "squash"
+            });            
