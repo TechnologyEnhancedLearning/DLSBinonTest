@@ -23,7 +23,8 @@ jobs:
             echo "should_merge=true" >> $GITHUB_ENV
           else
             echo "should_merge=false" >> $GITHUB_ENV
-
+          fi
+          
       - name: Debug Context
         uses: actions/github-script@v6
         with:
@@ -40,4 +41,4 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
               merge_method: "squash"
-            });
+            });            
