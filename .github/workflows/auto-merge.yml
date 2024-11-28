@@ -37,11 +37,28 @@ jobs:
           
           # Fetch the check runs associated with the PR to ensure CI passed before proceeding with merge
           CI_STATUS=$(gh pr view $PR_NUMBER --json statusCheckRollup --jq '.statusCheckRollup.checks')
-          
+
           # Ensure GitHub CLI is authenticated with the GitHub token
           echo "CI Status: $CI_STATUS"
 
-          if [[ "$CI_STATUS" != "SUCCESS" ]]; then
+          # Flag to track if all checks passed
+          ALL_CHECKS_PASSED=true
+
+          # Iterate over the check runs and check if all are successful
+          for check in $(echo "$CI_STATUS" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${check} | base64 --decode | jq -r ${1}
+            }
+
+            status=$(_jq '.conclusion')
+
+            if [[ "$status" != "success" ]]; then
+              ALL_CHECKS_PASSED=false
+              break
+            fi
+          done
+
+          if [[ "$ALL_CHECKS_PASSED" == "false" ]]; then
             echo "CI failed, aborting merge."
             exit 1
           fi
