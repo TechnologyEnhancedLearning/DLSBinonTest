@@ -1,6 +1,10 @@
 name: Auto Merge Dependabot PRs
 
-on: [pull_request]
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 permissions:
   pull-requests: write
@@ -9,13 +13,12 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-
     steps:
       - name: Log Event Data
         run: |
           echo "Triggered by ${{ github.actor }}"      
         if: github.actor == 'dependabot[bot]'
-          
+
       - name: Checkout the repository
         uses: actions/checkout@v3
         
