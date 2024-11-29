@@ -2796,10 +2796,10 @@ domexception@^4.0.0:
   dependencies:
     webidl-conversions "^7.0.0"
 
-dompurify@^2.5.4:
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.5.4.tgz#347e91070963b22db31c7c8d0ce9a0a2c3c08746"
-  integrity sha512-l5NNozANzaLPPe0XaAwvg3uZcHtDBnziX/HjsY1UcDj1MxTK8Dd0Kv096jyPK5HRzs/XM5IMj20dW8Fk+HnbUA==
+dompurify@^2.5.7:
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.5.7.tgz#6e0d36b9177db5a99f18ade1f28579db5ab839d7"
+  integrity sha512-2q4bEI+coQM8f5ez7kt2xclg1XsecaV9ASJk/54vwlfRRNQfDqJz2pzQ8t0Ix/ToBpXlVjrRIx7pFC/o8itG2Q==
 
 electron-to-chromium@^1.5.41:
   version "1.5.65"
