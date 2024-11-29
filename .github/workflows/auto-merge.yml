@@ -9,7 +9,7 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: github.actor == 'binon'
+    if: github.actor == 'dependabot[bot]'
 
     steps:
       - name: Checkout the repository
@@ -153,7 +153,7 @@ jobs:
       - name: Check if Should Merge
         run: |
           echo "DEBUG: should_merge=${{ env.should_merge }}"
-          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "ci_nuget_upgrade_master" ]]; then
+          if [[ "${{ env.should_merge }}" == "true" ]] && [[ "${{ github.event.pull_request.base.ref }}" == "Automatic_version_update_dependabot" ]]; then
             echo "DEBUG: should merge PR"
             echo "should_merge=true" >> $GITHUB_ENV
           else
