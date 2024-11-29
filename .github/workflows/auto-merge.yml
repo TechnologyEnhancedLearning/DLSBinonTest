@@ -12,6 +12,7 @@ jobs:
     
     steps:
       - name: Log Event Data
+        run: |
           echo "Triggered by ${{ github.actor }}"      
         if: github.actor == 'dependabot[bot]'
     
