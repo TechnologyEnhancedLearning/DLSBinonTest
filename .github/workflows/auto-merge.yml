@@ -13,13 +13,9 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
     
     steps:
-      - name: Log Event Data
-        run: |
-          echo "Triggered by ${{ github.actor }}"      
-        if: github.actor == 'dependabot[bot]'
-    
       - name: Checkout the repository
         uses: actions/checkout@v3
         
