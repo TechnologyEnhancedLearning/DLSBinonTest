@@ -2658,7 +2658,7 @@ core-js-compat@^3.38.0, core-js-compat@^3.38.1:
   dependencies:
     browserslist "^4.24.2"
 
-core-js@^3.22.4, core-js@^3.39.0:
+core-js@^3.28.0, core-js@^3.39.0:
   version "3.39.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.39.0.tgz#57f7647f4d2d030c32a72ea23a0555b2eaa30f83"
   integrity sha512-raM0ew0/jJUqkJ0E6e8UDtl+y/7ktFivgWvqw8dNSQeNWoSDLvQ1H/RN3aPXB9tBd4/FhyR4RDPGhsNIMsAn7g==
@@ -4537,13 +4537,13 @@ jest@^28.1.3:
     import-local "^3.0.2"
     jest-cli "^28.1.3"
 
-jodit@^3.18.5:
-  version "3.18.5"
-  resolved "https://registry.yarnpkg.com/jodit/-/jodit-3.18.5.tgz#4415ce457d2cd4bb881342807f68f9877af849f5"
-  integrity sha512-WBoYqFI3YuPvTmbstq3WXKn+WBroQXUJzUU3Nt8Qy+5RN7Kt6l+XVm7+AGvRdI4eCpgwuhAvFJRtzHQYFQdXUQ==
+jodit@^3.24.9:
+  version "3.24.9"
+  resolved "https://registry.yarnpkg.com/jodit/-/jodit-3.24.9.tgz#575a0218996f31003c230f81db0f056132dea9b5"
+  integrity sha512-t2d73v7GFbGI08ZzdCTwrzi8ZtoOG4icGzD6IIN2e+ghlpUKYxcHZ/Rmy6/mc6055172z+tv7QSr9BcOz6IOFQ==
   dependencies:
     autobind-decorator "^2.4.0"
-    core-js "^3.22.4"
+    core-js "^3.28.0"
 
 js-cookie@^3.0.5:
   version "3.0.5"
